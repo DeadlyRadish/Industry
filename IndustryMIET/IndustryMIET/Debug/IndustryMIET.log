@@ -1,0 +1,7 @@
+﻿  Date.cpp
+C:\Users\8231082\source\repos\IndustryMIET\IndustryMIET\Date.cpp(61,27): error C2084: function 'bool Date::leapYear(int)' already has a body
+C:\Users\8231082\source\repos\IndustryMIET\IndustryMIET\Date.cpp(19): message : see previous definition of 'leapYear'
+C:\Users\8231082\source\repos\IndustryMIET\IndustryMIET\Date.cpp(83,13): error C2065: 'leapYear': undeclared identifier
+  Source.cpp
+  Supplier.cpp
+  Generating Code...
