@@ -31,7 +31,7 @@ bool Supplier::setBalance(double input_balance) {
         balance = input_balance;
         return true;
     }
-    std::cout << "Невозможно записать отрицательное значение!" << std::endl;
+    std::cout << "Невероное значение!" << std::endl;
     return false;
 }
 
