@@ -8,7 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(Industry main.cpp
     date.h date.cpp
     supplier.h supplier.cpp
-    customer_base.h customer_base.cpp)
+    customer_base.h customer_base.cpp
+    fio.h fio.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS Industry

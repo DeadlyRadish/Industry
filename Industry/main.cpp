@@ -1,8 +1,12 @@
 #include<iostream>
 #include<string>
-#include"date.h"
+#include"customer_base.h"
 
 int main() {
-    Date d1 = Date(1, 12, 2000);
-    std::cout << d1;
+    std::setlocale(LC_ALL, "ru");
+    system("chcp 1251");
+    CustomerBase cache;
+    cache.setFileName("Place.txt");
+    cache.startProgram();
+    return 0;
 }

@@ -1,167 +1,110 @@
 #include "date.h"
-
-Date::BadDate::BadDate(int d, int m, int y)
-    : _day(d), _month(m), _year(y) {
-
-      };
-
-std::string Date::monthNames[12] = {
-    "January", "February", "March",
-    "April", "May", "June",
-    "July", "August", "September",
-    "October", "November", "December"
-};
-bool Date::defaultSet = true;
-Date Date::defaultDate = Date(1, 1, 2000);
-
-void Date::setDefault(const int d, Month m, const int y) {
-    Date::defaultDate.setDay(d);
-    Date::defaultDate.setMonth(m);
-    Date::defaultDate.setYear(y);
-    Date::defaultSet = true;
+#include <limits>
+Date::Date(int d, int m, int y) : day(d), month(m), year(y) {}
+bool Date::isLeapYear(int year) {
+    return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
-void Date::showDefault(std::ostream& os) {
-    os << Date::defaultDate;
-}
-const std::string Date::monthNameByNumber(const int n) {
-    return Date::monthNames[n-1];
-}
-
-Date::Date(int d, Month m, int y)
-    : _day(d), _month(m), _year(y) {
-    checkIllFormed();
-}
-Date::Date(int d, int m, int y)
-    : _day(d), _month(Month(m)), _year(y) {
-    checkIllFormed();
-}
-Date::Date(const Date& that)
-    : _day(that.day()), _month(that.month()), _year(that.year()) {
-    checkIllFormed();
-}
-void Date::checkIllFormed() {
-    if(isIllFormed()) {
-        BadDate bd = BadDate(day(), month(), year());
-        *this = Date::defaultDate;
-        throw bd;
+int Date::daysInMonth(int month, int year) {
+    if (month == 2) {
+        return isLeapYear(year) ? 29 : 28;
+    }
+    else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        return 30;
+    }
+    else {
+        return 31;
     }
 }
-Date& Date::operator=(const Date& that) {
-    fillDate(that.day(), that.month(), that.year());
-    return *this;
-}
-Date::~Date(void) {
-
-}
-
-int Date::day() const {
-    return _day;
-}
-Date::Month Date::month() const {
-    return Month(_month);
-}
-int Date::year() const {
-    return _year;
-}
-
-const std::string Date::getMonthName() const {
-    return Date::monthNameByNumber(month());
-}
-
-void Date::setDay(const int d) {
-    setVal(_day, d, day());
-}
-void Date::setMonth(const int m) {
-    setVal(_month, m, month());
-}
-void Date::setYear(const int y) {
-    setVal(_year, y, year());
-}
-void Date::setVal(int& val, const int newVal, const int prevVal) {
-    val = newVal;
-    if(isIllFormed()) {
-        BadDate bd = BadDate(day(), month(), year());
-        val = prevVal;
-        throw bd;
-    }
-}
-
-const Date& Date::operator++() {
-    setDay(day() + 1);
-    return *this;
-}
-const Date Date::operator++(int) {
-    setDay(day() + 1);
-    return *this;
-}
-const Date& Date::operator--() {
-    setDay(day() - 1);
-    return *this;
-}
-const Date Date::operator--(int) {
-    setDay(day() - 1);
-    return *this;
-}
-
-std::ostream& operator<<(std::ostream& os, const Date& d) {
-    os << d.day() << '.' << d.getMonthName() << '.' << d.year();
-    return os;
-}
-std::ostream& operator<<(std::ostream& os, const Date::BadDate& bd) {
-    os << bd._day << '.' << Date::monthNameByNumber(bd._month) << '.' << bd._year;
-    return os;
-}
-
-bool Date::leapYear(const int y) const {
-    /*
-    1.If the year is evenly divisible by 4, go to step 2. Otherwise, go to step 5.
-    2.If the year is evenly divisible by 100, go to step 3. Otherwise, go to step 4.
-    3.If the year is evenly divisible by 400, go to step 4. Otherwise, go to step 5.
-    4.The year is a leap year (it has 366 days).
-    5.The year is not a leap year (it has 365 days).
-    */
-    if(y%4) {
-        return false;
-    }
-    if(y%100) {
-        return true;
-    }
-    if(y%400) {
-        return false;
-    }
-    return true;
-}
-void Date::fillDate(int d, Month m, int y) {
-    setDay(d);
-    setMonth(m);
-    setYear(y);
-}
-
-bool Date::isIllFormed() const {
-    const int d(day()), m(month()), y(year());
-
-    //check year
-    if(y < 0) {
-        return true;
-    }
-
-    //check month
-    if(m < 1 || 12 < m) {
-        return true;
-    }
-
-    //check day
-    int maxDay((7<m)?31-m%2:30+m%2);
-    if(m == 2) {
-        if(leapYear(y)) {
-            maxDay = 29;
-        } else {
-            maxDay = 28;
+void Date::incrementDay() {
+    day++;
+    if (day > daysInMonth(month, year)) {
+        day = 1;
+        month++;
+        if (month > 12) {
+            month = 1;
+            year++;
         }
     }
-    if(d<1 || maxDay<d) {
-        return true;
+}
+Date Date::operator++(int) {
+    Date temp = *this;
+    incrementDay();
+    return temp;
+}
+std::string Date::formatDateAsString() {
+    std::ostringstream oss;
+    oss << day << "." << month << "." << year;
+    return oss.str();
+}
+std::ostream& operator<<(std::ostream& os, const Date& date) {
+    os << date.day << "." << date.month << "." << date.year;
+    return os;
+}
+bool Date::operator<(const Date& other) {
+    if (year != other.year) {
+        return year < other.year;
     }
-
-    return false;
+    if (month != other.month) {
+        return month < other.month;
+    }
+    return day < other.day;
+}
+bool Date::operator>(const Date& other) {
+    if (year != other.year) {
+        return year > other.year;
+    }
+    if (month != other.month) {
+        return month > other.month;
+    }
+    return day > other.day;
+}
+bool Date::operator==(const Date& other) {
+    return day == other.day && month == other.month && year == other.year;
+}
+bool Date::operator!=(const Date& other) {
+    return !(*this == other);
+}
+Date& Date::operator=(const std::string& dateStr) {
+    std::istringstream iss(dateStr);
+    char delimiter;
+    iss >> day >> delimiter >> month >> delimiter >> year;
+    return *this;
+}
+bool Date::isValidDate(const std::string& dateStr) {
+    Date temp(0, 0, 0);
+    std::istringstream iss(dateStr);
+    char delimiter;
+    iss >> temp.day >> delimiter >> temp.month >> delimiter >> temp.year;
+    return isValidDay(temp.day, temp.month, temp.year);
+}
+bool Date::isValidDay(int day, int month, int year) {
+    if (day <= 0 || month <= 0 || month > 12 || year < 0) {
+        return false;
+    }
+    int daysInMonth;
+    switch (month) {
+    case 2:
+        daysInMonth = isLeapYear(year) ? 29 : 28;
+        break;
+    case 4:
+    case 6:
+    case 9:
+    case 11:
+        daysInMonth = 30;
+        break;
+    default:
+        daysInMonth = 31;
+    }
+    return day <= daysInMonth;
+}
+std::istream& operator>>(std::istream& is, Date& date) {
+    std::string dateStr;
+    std::cout << "Введите дату: ";
+    std::getline(is >> std::ws, dateStr);
+    if (!Date::isValidDate(dateStr)) {
+        is.setstate(std::ios_base::failbit);
+        throw std::runtime_error("Неверный формат ввода (ДД.ММ.ГГГГ)");
+    }
+    date = dateStr;
+    return is;
 }

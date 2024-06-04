@@ -2,33 +2,42 @@
 #define SUPPLIER_H
 
 #include "date.h"
+#include "fio.h"
 #include<iostream>
 #include<string>
 
 class Supplier
 {
 private:
-    std::string name;
-    std::string legal_address;
     double balance;
     Date date_of_delivery;
+
 public:
+    FIO name;
     static int count;
 
     Supplier();
-    Supplier(std::string, std::string, double, Date);
+    Supplier(FIO, double, Date);
+    Supplier(const Supplier& other):
+        name(other.name),
+        balance(other.balance),
+        date_of_delivery(other.date_of_delivery)
+    {
+    }
 
     ~Supplier();
-
-    void setName(std::string);
-    void setAddress(std::string);
+    friend std::ostream& operator<<(std::ostream& os, const Supplier& date);
+    void setName(std::string, std::string, std::string);
     bool setBalance(double);
-    bool setDate(Date);
+    bool setDate(std::string);
+    bool operator==(const Supplier& other);
+    Supplier& operator=(const Supplier& other);
 
     std::string getName();
-    std::string getAddress();
     double getBalance();
-    Date getDate();
+    std::string getDate();
+
+    friend std::istream& operator>>(std::istream& is, Supplier& supplier);
 };
 
 #endif // SUPPLIER_H

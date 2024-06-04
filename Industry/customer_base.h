@@ -22,14 +22,15 @@ private:
     void initializationRepository();
     int getIntValidInput();
     double getDoubleValidInput();
-    void addNewProduct();
+    void addNewSupplier();
     void printData();
     void programMenu();
-    void findAllProductMoreThanTakePrice();
-    void findProductByName();
+    void findSupplierByName();
+    void sortBaseByBalance();
+    void findSupplierByDate();
 public:
     CustomerBase();
-    ~CustomerBase(){
+    ~CustomerBase() {
         delete[] repository;
     };
     void startProgram();
