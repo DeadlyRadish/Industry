@@ -27,6 +27,10 @@ void Supplier::setName(std::string input_f_name, std::string input_s_name, std::
     name.setPatronymic(input_p_name);
 }
 
+void Supplier::setName(FIO input_name) {
+    name = input_name;
+}
+
 bool Supplier::setBalance(double input_balance) {
     if (input_balance >= 0){
         balance = input_balance;
