@@ -28,6 +28,7 @@ public:
     ~Supplier();
     friend std::ostream& operator<<(std::ostream& os, const Supplier& date);
     void setName(std::string, std::string, std::string);
+    void setName(FIO);
     bool setBalance(double);
     bool setDate(std::string);
     bool operator==(const Supplier& other);
