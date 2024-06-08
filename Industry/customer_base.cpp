@@ -52,8 +52,7 @@ double CustomerBase::getDoubleValidInput() {
 }
 
 void CustomerBase::addNewSupplier() {
-    std::string input_name = "";
-    std::string input_address = "";
+    FIO input_name;
     double input_balance = 0;
     std::string input_date = "";
 
@@ -66,7 +65,22 @@ void CustomerBase::addNewSupplier() {
     }
 
     try {
-        std::cin >> repository[current_size];
+        std::cin >> input_name;
+        repository[current_size].setName(input_name);
+
+        std::cout << "Введите сумму поставки: ";
+        input_balance = getDoubleValidInput();
+        while (not repository[current_size].setBalance(input_balance)) {
+            std::cout << "Введите значение повторно: ";
+            input_balance = getDoubleValidInput();
+        }
+
+        std::cout << "Введите дату поставки: " << std::endl;
+        std::getline(std::cin >> std::ws, input_date);
+        while (not repository[current_size].setDate(input_date)) {
+            std::cout << "Введите значение повторно:" << std::endl;
+            std::getline(std::cin >> std::ws, input_date);
+        }
     } catch (const std::runtime_error& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         std::exit(-1);
